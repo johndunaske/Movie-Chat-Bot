@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/johndunaske/Movie-Chat-Bot#readme",
   "dependencies": {
+    "apiai": "^4.0.3",
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "request": "^2.88.0",
+    "save": "^2.3.2"
   }
 }
