@@ -5,7 +5,6 @@
     <span id="final_span" class="final"></span>
     <span id="interim_span" class="interim"></span>
 </div>
-
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript">
     var final_transcript = '';
@@ -32,6 +31,7 @@
         };
 
         var findSpoken = false;
+        var x = ""
         recognition.onresult = function (event) {
             var interim_transcript = '';
             for (var i = event.resultIndex; i < event.results.length; ++i) {
@@ -43,6 +43,11 @@
                         console.log("recognition stopped !");
                         searchTerm = searchTerm.trim();
 
+                        if (searchTerm == "me") {
+                            return;
+                        }
+
+
                         const weggiesURL = 'https://api.wegmans.io/products/search?query=' + searchTerm + '&api-version=2018-10-18&subscription-key=a12ce7d680664c7d97017f45412bbc47';
 
                         let nutt;
@@ -50,14 +55,21 @@
                         axios.get(weggiesURL)
 
                             .then(function (response) {
+                                var returnStr = '';
                                 axios.get('https://api.wegmans.io' + response['data']['results'][0]['_links'][0]["href"] + '&subscription-key=a12ce7d680664c7d97017f45412bbc47')
 
                                     .then(function (reply) {
-                                        console.log(reply['data']['nutrients']);
+                                        var list = reply['data']['nutrients'];
+
+                                        for (var i in list) {
+                                            returnStr = returnStr + JSON.stringify(reply['data']['nutrients'][i]['type']) + ": " + JSON.stringify(reply['data']['nutrients'][i]['quantity']) + '\n';
+                                        }
+
+                                        console.log(returnStr);
                                     })
 
                                     .catch(function (error) {
-                                        console.log(error);
+                                        console.log("Try again");
                                     });
                             })
 
@@ -69,8 +81,6 @@
                 }
                 if (event.results[i][0].transcript.includes("find")) {
                     findSpoken = true;
-                    var searchStr = event.results[i][0].transcript.split('find')[0];
-                    console.log(searchStr);
                 }
 
 
